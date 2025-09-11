@@ -2,6 +2,7 @@
 #6 symbol:"cherry",  "lemon","watermelon", "grape", "apple","lucky7"
 #both lucky7 = 500, both same fruits = 200, 2 same fruits = 70, both different = -50
 import random
+from turtle import right
 
 
 #section list
@@ -114,7 +115,75 @@ def main_menu( token,result ,reel1 , reel2 , reel3, r1 , r2 , r3 ):
         else :
            return token,False
 
-     
+#class
+class slot_machine :
+    #initialise
+    def _init_ ( self, token ,r1 , r2 , r3, reel1 , reel2 , reel3 ):
+        self.token = token 
+        self.r1 = r1
+        self.r2 = r2
+        self.r3 = r3
+        self.reel1 = reel1
+        self.reel2 = reel2
+        self.reel3 = reel3
+
+    #update token value
+    def update_token ( self, token ):
+        self.token.append ( token )
+
+    #deduct the entry fee and randomise reels
+    def rand_reels ( self ) :
+        self.token - 50 #Entry fees
+        self.r1 = random.randint( 1, 6 )
+        self.r2 = random.randint( 1, 6 )
+        self.r3 = random.randint( 1, 6 )
+
+    #the rolling result
+    def roll_result ( self ) :
+        #both are same and its 6 (lucky7)
+        if self.r1 == self.r2 == self.r3 == 6 :
+            self.token + 500
+        #both are same fruits
+        elif self.r1 == self.r2 == self.r3 :
+            self.token + 200
+        #2 same fruits
+        elif self.r1 == self.r2 or self.r1 == self.r3 or self.r2 == self.r3 :
+            self.token + 70
+        else :
+            return
+
+    #showing result
+    def show_result ( self ):
+        #The way to use SymCovert = { condition : result }
+        SymCovert = {   
+         1 : "cherry",  
+         2 : "lemon",
+         3 : "watermelon",
+         4 : "grape",
+         5 : "apple",
+         6 : "lucky7",
+        }
+        #have to use.get
+        self.reel1 = SymCovert.get ( self.r1 )
+        self.reel2 = SymCovert.get ( self.r2 )
+        self.reel3 = SymCovert.get ( self.r3 )
+
+        print("result: " ,self.reel1 ,",", self.reel2, "," , self.reel3)
+        print("You had won", self.token - 1000 )
+        print("Your total token right now:", self.token )
+
+        #4.end ui
+        def end ( self ) :
+            print("Thanks for playing, your final earn:", self.token - 1000 , " tokens") #1000 is initialise tokens amount
+            print("Total tokens:",self.token)
+
+            
+
+
+
+
+
+
     
 # ----------------------- ui section -------------------------
 
@@ -141,24 +210,12 @@ def rule_book () :
     
     return
 
-#3. game done result ui
-def after_roll ( r1, r2, r3 ,result,token ) :
-    print("result: " ,r1 ,",", r2, "," , r3)
-    print("You had won", result )
-    print("Your total token right now:", token )
 
-    return result
 
-#4.end ui
-def end( token ) :
-    print("Thanks for playing, your final earn:", token - 1000 , " tokens") #1000 is initialise tokens amount
-    print("Total tokens:",token)
 
-    return
 
 #----------------------main function-----------------------
 
-#have to put the token number outside the loop to prevent reset 
 token = 1000 #initialise the token number
 
 #initialise the both reel
@@ -171,21 +228,23 @@ r1 = ""
 r2 = "" 
 r3 = "" 
 
-#initialise the result amount   
-result = 0 
+#class 
+sM = slot_machine( token ,r1 , r2 , r3, reel1 , reel2 , reel3 )
 
 while True:
     endCode = False
     #show to main menu
-    token ,endCode = main_menu( token,result,reel1 , reel2 , reel3,r1 , r2 , r3 )
+    token ,endCode = main_menu( sM )
 
     if endCode == True:
         break
 
 
-end( token )
+
     
 #application ended
+
+
 
 
 
